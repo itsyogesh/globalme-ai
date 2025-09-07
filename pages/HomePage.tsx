@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { DEFAULT_TARGET_COUNTRIES, COUNTRIES } from '../constants';
 import { generateImage } from '../services/geminiService';
 import type { GeneratedImageMap } from '../types';
@@ -16,6 +16,35 @@ const HomePage: React.FC = () => {
     const [generatedImages, setGeneratedImages] = useState<GeneratedImageMap>({});
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchUserCountry = async () => {
+            try {
+                // FIX: Switched to a reliable, secure endpoint for IP lookup that doesn't require an API key
+                // to resolve the 403 Forbidden error from the previous service.
+                const response = await fetch('https://api.ip.sb/geoip');
+                if (!response.ok) {
+                    // Don't throw an error to the user, just log it
+                    console.error('Failed to fetch IP data, status:', response.status);
+                    return;
+                }
+                const data = await response.json();
+                // Adjust logic for the new API response structure
+                if (data && data.country) {
+                    // Check if the fetched country is in our predefined list
+                    const countryExists = COUNTRIES.some(c => c.name === data.country);
+                    if (countryExists) {
+                        setOriginCountry(data.country);
+                    }
+                }
+            } catch (err) {
+                console.error("Could not fetch user's country, defaulting to India.", err);
+                // Silently fail and let the default 'India' remain
+            }
+        };
+
+        fetchUserCountry();
+    }, []); // Empty dependency array ensures this runs only once on component mount
 
     const countriesToDisplay = useMemo(() => {
         const generated = Object.keys(generatedImages);
