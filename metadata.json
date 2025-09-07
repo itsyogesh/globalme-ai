@@ -1,0 +1,5 @@
+{
+  "name": "Global Me AI",
+  "description": "An AI-powered tool that lets you upload a selfie and see how you would look if you were from a different country. It uses Google's Gemini API to generate realistic portraits based on your photo.",
+  "requestFramePermissions": []
+}
