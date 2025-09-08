@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import AuthModal from './components/auth/AuthModal';
 import HomePage from './pages/HomePage';
+import Footer from './components/Footer';
 
 export default function App() {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -20,6 +21,7 @@ export default function App() {
                         {/* Simple router can go here in the future */}
                         <HomePage />
                     </main>
+                    <Footer />
                 </div>
             </div>
         </>
